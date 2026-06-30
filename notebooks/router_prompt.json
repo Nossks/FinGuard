@@ -1,0 +1,13 @@
+{
+    "name": null,
+    "input_variables": [],
+    "optional_variables": [],
+    "output_parser": null,
+    "partial_variables": {},
+    "metadata": null,
+    "tags": null,
+    "template": "\n    You are an expert router for a Fraud Detection RAG system.\n    Analyze the user's input.\n",
+    "template_format": "f-string",
+    "validate_template": false,
+    "_type": "prompt"
+}

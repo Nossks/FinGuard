@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinGuard | Secured by CyborgDB</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="container main-container">
+    <div class="row h-100">
+        
+        <div class="col-md-8 h-100">
+            <div class="card chat-card">
+                <div class="chat-header d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="fas fa-shield-alt text-success me-2"></i>
+                        <span class="fw-bold">CyborgDB Fraud Analyst</span> 
+                    </div>
+                    <div class="badge bg-dark border border-secondary text-secondary p-2" id="mode-badge">
+                        <i class="fas fa-magic me-1"></i> Auto-Router: IDLE
+                    </div>
+                </div>
+                
+                <div id="chatbox" class="chat-body">
+                    <div class="msg msg-bot">
+                        <div class="bubble bubble-bot">
+                            <div><strong>System Secure.</strong></div>
+                            <div>I will automatically detect if you need a <span class="text-success">Search</span> or just a <span class="text-secondary">Chat</span>.</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="chat-footer">
+                    <form id="chatForm" class="d-flex">
+                        <input type="text" id="userInput" class="form-control me-2" placeholder="Ex: 'Flag transfers over $50k'..." required autocomplete="off">
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 h-100">
+            <div class="dashboard-card">
+                <h5 class="mb-4 border-bottom border-secondary pb-2 text-white">
+                    <i class="fas fa-tachometer-alt me-2 text-info"></i>Live Metrics
+                </h5>
+                
+                <div class="metric-box" style="border-color: #00F0FF;">
+                    <div class="metric-label">🛡️ CyborgDB (Encrypted)</div>
+                    <div id="cyborg-val" class="metric-value text-info">0.000s</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-label">⚡ FAISS</div>
+                    <div id="faiss-val" class="metric-value text-white-50">--</div>
+                </div>
+
+                <div class="metric-box">
+                    <div class="metric-label">💾 Chroma</div>
+                    <div id="chroma-val" class="metric-value text-white-50">--</div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <div class="metric-box p-2">
+                            <div class="metric-label" style="font-size: 0.6rem;">vs FAISS</div>
+                            <div id="overhead-faiss" class="fw-bold text-warning" style="font-size: 1rem;">--</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="metric-box p-2">
+                            <div class="metric-label" style="font-size: 0.6rem;">vs Chroma</div>
+                            <div id="overhead-chroma" class="fw-bold text-success" style="font-size: 1rem;">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto text-center text-secondary small">
+                    <i class="fas fa-info-circle me-1"></i> Router Status: <span id="status-text">Waiting...</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
