@@ -1,46 +1,57 @@
-from flask import Flask, render_template, request, jsonify
-import sys
-import os
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi import FastAPI,Request,HTTPException
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
+from src.pipeline.prediction import Prediction
+from pydantic import BaseModel,Field
+from contextlib import asynccontextmanager
 import traceback
 
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+class MessagePayload(BaseModel):
+    msg: str = Field(...,description="message sent by user to llm")
 
-try:
-    from src.pipeline.prediction import Prediction
-except ImportError:
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    print("FASTAPI: Initializing FinGuard Pipeline...")
     try:
-        from src.pipeline.prediction import Prediction
-    except ImportError:
-        print("CRITICAL ERROR: Could not find 'src/pipeline/prediction.py'")
-        sys.exit(1)
+        app.state.pipeline = Prediction()
+        print("FASTAPI: Pipeline Ready.")
+    except Exception as e:
+        print("CRITICAL ERROR during initialization:")
+        traceback.print_exc()
+    
+    yield 
+    
+    print("FASTAPI: Shutting down.")
 
-app = Flask(__name__)
-pipeline = None
+app = FastAPI(lifespan=lifespan)
+templates = Jinja2Templates(directory="templates")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
-def initialize_pipeline():
-    global pipeline
-    if pipeline is None:
-        print("⚡ FLASK: Initializing Pipeline...")
-        try:
-            pipeline = Prediction()
-            print("FLASK: Pipeline Ready.")
-        except:
-            traceback.print_exc()
+@app.get('/',response_class=HTMLResponse)
+async def home(request:Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html"
+    )
 
-@app.route("/")
-def home():
-    return render_template("index.html")
+@app.get('/benchmark_report',response_class=HTMLResponse)
+async def benchmark_report(request:Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="benchmark_dashboard.html"
+    )
 
-@app.route("/get_response", methods=["POST"])
-def get_response():
-    if pipeline is None:
-        initialize_pipeline()
-        
+@app.post("/get_response")
+def get_response(payload : MessagePayload, request:Request):
+    pipeline = getattr(request.app.state, "pipeline", None)   
+    if not pipeline:
+        raise HTTPException(status_code=503, detail="Pipeline not initialized. Check server logs.")
+
     try:
-        user_input = request.form["msg"]
-        
-        bot_reply_object, metrics = pipeline.predict(user_input)
-        
+        bot_reply_object, metrics = pipeline.predict(payload.msg)
+
         if hasattr(bot_reply_object, 'content'):
             bot_text = bot_reply_object.content
         else:
@@ -51,17 +62,12 @@ def get_response():
         else:
             mode_used = "chat"
 
-        return jsonify({
+        return JSONResponse(status_code=200,content={
             "response": bot_text, 
             "metrics": metrics,
             "mode_used": mode_used
         })
-        
+
     except Exception as e:
         traceback.print_exc()
-        return jsonify({"response": "Error processing request.", "metrics": {}, "mode_used": "error"})
-
-if __name__ == "__main__":
-    initialize_pipeline()
-    print("Open in Browser: http://127.0.0.1:5000")
-    app.run(host="0.0.0.0", port=5000, debug=True)
+        raise HTTPException(status_code=500,detail="Internal server error during prediction.")

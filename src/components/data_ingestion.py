@@ -68,7 +68,7 @@ class DataIngestion:
             documents=docs,
             embedding=self.embedding_model,
             index_key=CyborgVectorStore.generate_key(),
-            api_key="cyborg_36c89c513cac4c1c871a",        ##enter the api key here
+            api_key="cyborg_ff4b7e5d25434632a70b18b75f53fe29",        ##enter the api key here
             index_location=DBConfig('memory'),
             config_location=DBConfig('memory'),
             index_type="ivfflat",

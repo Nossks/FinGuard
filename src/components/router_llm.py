@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from src.logger import logging
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 class output(BaseModel):
     Decision:Literal['SEARCH','CHAT']=Field(description="Choose 'SEARCH' if the query requires technical fraud detection info. Choose 'CHAT' for general conversation.")
     query:str=Field(default="N/A",description="If decision is SEARCH, extract the core technical keywords. If CHAT, return 'N/A.")
@@ -20,7 +21,7 @@ class Router_llm:
         self.structured_router_llm = self.router_llm.with_structured_output(output)
 
         logging.info('loading router prompt template')
-        self.template = load_prompt('/home/cry_more/ongoing/fraud-detection/router_template.json')
+        self.template = load_prompt(os.path.join(current_dir,'router_template.json'))
         self.router_llm_chain = self.template | self.structured_router_llm
 
         logging.info('router chain created')

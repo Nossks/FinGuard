@@ -23,14 +23,16 @@ chatForm.addEventListener('submit', async function(e) {
         </div>`;
     chatbox.scrollTop = chatbox.scrollHeight;
 
-    // 2. Send Data
-    const formData = new FormData();
-    formData.append("msg", text);
+    // 2. Send Data (FastAPI JSON format)
+    const payload = { msg: text };
 
     try {
         const res = await fetch('/get_response', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
         });
         const data = await res.json();
 

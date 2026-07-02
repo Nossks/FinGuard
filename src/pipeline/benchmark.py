@@ -10,17 +10,20 @@ from src.components.data_ingestion import DataIngestion
 from src.components.database_retrival import Retrieval
 from src.logger import logging
 from src.exception import CustomException
+from src.components.data_generation import DataGenerator
 
 # Configuration
 @dataclass
 class BenchmarkConfig:
-    report_html_path = os.path.join('benchmark_dashboard.html')
+    report_html_path = os.path.join("templates",'benchmark_dashboard.html')
     raw_data_path = os.path.join('data', 'financial_synthetic.csv')
     concurrency_level = 5  # Simulate 5 simultaneous users
     warmup_queries = 20    # Queries to run before starting the timer
 
 class Benchmark:
     def __init__(self):
+        obj = DataGenerator()
+        obj.initiate_data_generation(1000)
         self.config = BenchmarkConfig()
         self.results_cache = []
 

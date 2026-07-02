@@ -12,7 +12,7 @@ def get_requirements(file_path):
     return requirements
 
 setup(
-    name='fraud_detection',
+    name='finguard',
     version='0.1',
     author='Aryan Gairola',
     author_email='gairolaaryn@gmail.com',

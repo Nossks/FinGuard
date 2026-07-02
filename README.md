@@ -152,7 +152,7 @@ Create a `.env` file. You must provide CyborgDB credentials to enable the encryp
 ```env
 # AI Models
 HUGGINGFACEHUB_API_TOKEN=hf_your_token_here
-GOOGLE_API_KEY=api-key
+GOOGLE_API_KEY=api_key
 ```
 
 ```

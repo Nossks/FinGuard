@@ -15,7 +15,6 @@ class Prediction:
         self.generation.initiate_data_generation(1000)
         self.ingestion = DataIngestion()
         _, self.cyborg_db = self.ingestion.initiate_data_ingestion()
-        subprocess.run(['python3', 'src/components/router_template_generator.py'])
         self.retriever = Retrieval()
         self.router_llm = Router_llm()
         self.router = self.router_llm.initiate_routing()
